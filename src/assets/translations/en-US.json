@@ -3040,6 +3040,7 @@
       "Accounting": "Accounting",
       "Accounting Closures": "Accounting Closures",
       "Accounting Rules": "Accounting Rules",
+      "Pentaho": "Pentaho",
       "Accounting to journal entries": "In Mifos X, you can close accounting to journal entries. Closures can be applied to all branches or to each branch separately. It is important for organizations to close accounting periodically to prevent transactions that affect the accounting books.",
       "Accounts linked to Financial Activities": "Accounts linked to Financial Activities are mapped accounts which are needed to do system generating accounting transaction.",
       "Accrues income, expenses and liabilities": "Accrues income, expenses and liabilities as on the provided date",
