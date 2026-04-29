@@ -29,6 +29,17 @@ export interface SavingsAccountTransaction {
   lienTransaction: boolean;
   releaseTransactionId: number;
   chargesPaidByData: any[];
+  // Hold & Release Enhancement fields
+  holdTransactionId?: number;
+  relatedTransactionId?: number;
+  isFromHoldRelease?: boolean;
+  remainingHoldAmount?: number;
+  operationType?: 'USER_HOLD' | 'USER_RELEASE' | 'SYSTEM_WITHDRAWAL';
+  originatingChannel?: string;
+  glStatus?: 'COMPLETED' | 'NOT_APPLICABLE';
+  transactionSubType?: 'NORMAL' | 'HOLD_RELEASE_WITHDRAWAL';
+  externalId?: string;
+  note?: string;
 }
 
 export interface SavingsAccountTransactionType {

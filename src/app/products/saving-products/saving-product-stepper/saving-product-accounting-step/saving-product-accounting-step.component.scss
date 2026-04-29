@@ -43,3 +43,9 @@ mat-divider {
     flex-direction: column;
   }
 }
+
+.layout-row-wrap{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}

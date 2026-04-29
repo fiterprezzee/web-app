@@ -40,3 +40,20 @@
   cursor: pointer;
   font-weight: 800;
 }
+
+.hold-release {
+  background-color: rgba(103, 58, 183, 0.1);
+}
+
+.hold-release-badge {
+  font-size: 11px;
+  min-height: 20px;
+  padding: 2px 8px;
+}
+
+.remaining-hold {
+  font-size: 12px;
+  color: #ff9800;
+  font-weight: 500;
+}
+

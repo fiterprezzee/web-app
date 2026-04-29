@@ -42,7 +42,7 @@ import { ExternalIdentifierComponent } from '../../../shared/external-identifier
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { DateFormatPipe } from '../../../pipes/date-format.pipe';
+import { DateFormatPipe } from 'app/pipes/date-format.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -104,6 +104,7 @@ export class TransactionsTabComponent implements OnInit {
     'date',
     'externalId',
     'transactionType',
+    'holdInfo',
     'debit',
     'credit',
     'balance',
@@ -234,8 +235,40 @@ export class TransactionsTabComponent implements OnInit {
       return 'transfer';
     } else if (transaction.transactionType.accrual) {
       return 'accrual';
+    } else if (transaction.isFromHoldRelease) {
+      return 'hold-release';
     } else {
       return '';
+    }
+  }
+
+  /**
+   * Checks if transaction is from hold release
+   */
+  isFromHoldRelease(transaction: SavingsAccountTransaction): boolean {
+    return transaction.isFromHoldRelease === true;
+  }
+
+  /**
+   * Checks if transaction is a hold transaction
+   */
+  isHoldTransaction(transaction: SavingsAccountTransaction): boolean {
+    return transaction.transactionType?.amountHold === true;
+  }
+
+  /**
+   * Checks if transaction is a release transaction
+   */
+  isReleaseTransaction(transaction: SavingsAccountTransaction): boolean {
+    return transaction.transactionType?.amountRelease === true;
+  }
+
+  /**
+   * Navigate to linked hold transaction
+   */
+  navigateToHoldTransaction(holdTransactionId: number): void {
+    if (holdTransactionId) {
+      this.router.navigate([holdTransactionId, 'general'], { relativeTo: this.route });
     }
   }
 

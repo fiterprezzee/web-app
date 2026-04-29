@@ -88,6 +88,14 @@
           [inputLabel]="'Savings transfers in suspense'"
         >
         </mifosx-gl-account-selector>
+        <mifosx-gl-account-selector
+          class="flex-48"
+          [inputFormControl]="savingProductAccountingForm.controls.fundsOnHoldAccountId"
+          [glAccountList]="liabilityAccountData"
+          [required]="false"
+          [inputLabel]="'Funds on Hold Account'"
+        >
+        </mifosx-gl-account-selector>
         @if (isAccrualAccounting()) {
           <mifosx-gl-account-selector
             class="flex-48"

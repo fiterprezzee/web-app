@@ -10,7 +10,7 @@ import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
-import { ReleaseAmountDialogComponent } from 'app/savings/savings-account-view/custom-dialogs/release-amount-dialog/release-amount-dialog.component';
+import { ReleaseAmountDialogComponent, ReleaseAmountDialogData } from 'app/savings/savings-account-view/custom-dialogs/release-amount-dialog/release-amount-dialog.component';
 import { UndoTransactionDialogComponent } from 'app/savings/savings-account-view/custom-dialogs/undo-transaction-dialog/undo-transaction-dialog.component';
 import { SavingsService } from 'app/savings/savings.service';
 import { SettingsService } from 'app/settings/settings.service';
@@ -19,6 +19,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { TransactionPaymentDetailComponent } from '../../../../../shared/transaction-payment-detail/transaction-payment-detail.component';
 import { DateFormatPipe } from '../../../../../pipes/date-format.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { AlertService } from 'app/core/alert/alert.service';
 
 @Component({
   selector: 'mifosx-savings-transaction-general-tab',
@@ -40,6 +41,7 @@ export class SavingsTransactionGeneralTabComponent {
   private router = inject(Router);
   dialog = inject(MatDialog);
   private settingsService = inject(SettingsService);
+  private alertService = inject(AlertService);
 
   accountId: string;
   transactionId: string;
@@ -60,14 +62,55 @@ export class SavingsTransactionGeneralTabComponent {
   }
 
   releaseAmount(): void {
-    const releaseAmountDialogRef = this.dialog.open(ReleaseAmountDialogComponent);
+    const dialogData: ReleaseAmountDialogData = {
+      holdAmount: this.transactionData.amount,
+      remainingHoldAmount: this.transactionData.remainingHoldAmount ?? this.transactionData.amount,
+      paymentTypes: this.transactionData.paymentTypeOptions || [],
+      maxDate: this.settingsService.businessDate
+    };
+
+    const releaseAmountDialogRef = this.dialog.open(ReleaseAmountDialogComponent, {
+      data: dialogData,
+      width: '400px'
+    });
+
     releaseAmountDialogRef.afterClosed().subscribe((response: any) => {
-      if (response.confirm) {
-        const data = {};
+      if (response?.confirm) {
+        const locale = this.settingsService.language.code;
+        const dateFormat = this.settingsService.dateFormat;
+        const data: any = {
+          transactionDate: this.dateUtils.formatDate(response.transactionDate, dateFormat),
+          transactionAmount: response.transactionAmount,
+          dateFormat,
+          locale
+        };
+
+        if (response.paymentTypeId) {
+          data.paymentTypeId = response.paymentTypeId;
+        }
+
         this.savingsService
           .executeSavingsAccountTransactionsCommand(this.accountId, 'releaseAmount', data, this.transactionData.id)
-          .subscribe(() => {
-            this.router.navigate(['../..'], { relativeTo: this.route });
+          .subscribe({
+            next: (result: any) => {
+              // Handle new response format with changes object
+              const changes = result?.changes || {};
+              const releaseTransactionId = changes.releaseTransactionId ?? result?.resourceId;
+              const withdrawalTransactionId = changes.withdrawalTransactionId;
+
+              if (withdrawalTransactionId) {
+                this.alertService.alert({
+                  type: 'Release Amount Success',
+                  message: `Amount released successfully. Release ID: ${releaseTransactionId}, Withdrawal ID: ${withdrawalTransactionId}`
+                });
+              }
+
+              this.router.navigate(['../..'], { relativeTo: this.route });
+            },
+            error: (error: any) => {
+              // Error will be handled by the global error handler interceptor
+              console.error('Release amount error:', error);
+            }
           });
       }
     });

@@ -9,10 +9,46 @@
 <h1 mat-dialog-title>{{ 'labels.heading.Release Amount' | translate }}</h1>
 <div mat-dialog-content>
   <p>{{ 'labels.text.Are you sure you want to release this amount' | translate }}</p>
+
+  @if (remainingHoldAmount > 0) {
+    <p class="hold-info">
+      <strong>{{ 'labels.text.Available Hold Amount' | translate }}:</strong>
+      {{ remainingHoldAmount | currency:'USD':'symbol-narrow':'1.2-2' }}
+    </p>
+  }
+
+  <form [formGroup]="releaseForm" class="release-form">
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'labels.inputs.Transaction Date' | translate }}</mat-label>
+      <input matInput [matDatepicker]="transactionDatePicker" formControlName="transactionDate" [max]="maxDate">
+      <mat-datepicker-toggle matSuffix [for]="transactionDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #transactionDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'labels.inputs.Release Amount' | translate }}</mat-label>
+      <input matInput type="number" formControlName="transactionAmount" [max]="remainingHoldAmount" min="0.01" step="0.01">
+      @if (releaseForm.get('transactionAmount')?.hasError('max')) {
+        <mat-error>{{ 'labels.text.Release amount cannot exceed remaining hold amount' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (paymentTypes && paymentTypes.length > 0) {
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'labels.inputs.Payment Type' | translate }}</mat-label>
+        <mat-select formControlName="paymentTypeId">
+          <mat-option value="">{{ 'labels.catalogs.None' | translate }}</mat-option>
+          @for (paymentType of paymentTypes; track paymentType.id) {
+            <mat-option [value]="paymentType.id">{{ paymentType.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </form>
 </div>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close>{{ 'labels.buttons.Cancel' | translate }}</button>
-  <button mat-raised-button color="warn" [mat-dialog-close]="{ confirm: true }">
+  <button mat-raised-button color="warn" [disabled]="!releaseForm.valid" (click)="confirm()">
     {{ 'labels.buttons.Confirm' | translate }}
   </button>
 </mat-dialog-actions>

@@ -148,6 +148,7 @@ export class SavingProductAccountingStepComponent implements OnInit {
         overdraftPortfolioControlId: this.savingProductsTemplate.accountingMappings.overdraftPortfolioControl.id,
         savingsControlAccountId: this.savingProductsTemplate.accountingMappings.savingsControlAccount.id,
         transfersInSuspenseAccountId: this.savingProductsTemplate.accountingMappings.transfersInSuspenseAccount.id,
+        fundsOnHoldAccountId: this.savingProductsTemplate.accountingMappings?.fundsOnHoldAccount?.id || '',
         interestOnSavingsAccountId: this.savingProductsTemplate.accountingMappings.interestOnSavingsAccount.id,
         writeOffAccountId: this.savingProductsTemplate.accountingMappings.writeOffAccount.id,
         incomeFromFeeAccountId: this.savingProductsTemplate.accountingMappings.incomeFromFeeAccount.id,
@@ -233,6 +234,10 @@ export class SavingProductAccountingStepComponent implements OnInit {
         this.savingProductAccountingForm.addControl(
           'transfersInSuspenseAccountId',
           new UntypedFormControl('', Validators.required)
+        );
+        this.savingProductAccountingForm.addControl(
+          'fundsOnHoldAccountId',
+          new UntypedFormControl('')
         );
         this.savingProductAccountingForm.addControl(
           'interestOnSavingsAccountId',
@@ -325,6 +330,7 @@ export class SavingProductAccountingStepComponent implements OnInit {
         this.savingProductAccountingForm.removeControl('overdraftPortfolioControlId');
         this.savingProductAccountingForm.removeControl('savingsControlAccountId');
         this.savingProductAccountingForm.removeControl('transfersInSuspenseAccountId');
+        this.savingProductAccountingForm.removeControl('fundsOnHoldAccountId');
         this.savingProductAccountingForm.removeControl('interestOnSavingsAccountId');
         this.savingProductAccountingForm.removeControl('writeOffAccountId');
         this.savingProductAccountingForm.removeControl('incomeFromFeeAccountId');

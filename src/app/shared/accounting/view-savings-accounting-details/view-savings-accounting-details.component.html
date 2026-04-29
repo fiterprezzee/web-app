@@ -88,6 +88,17 @@
             </mifosx-gl-account-display>
           </div>
           <div class="flex-100 layout-row-wrap responsive-column">
+            @if (accountingMappings.fundsOnHoldAccount) {
+              <mifosx-gl-account-display
+                class="flex-100"
+                [accountTitle]="'Funds on Hold Account'"
+                [glAccount]="accountingMappings.fundsOnHoldAccount"
+                [withTitle]="'40%'"
+              >
+              </mifosx-gl-account-display>
+            }
+          </div>
+          <div class="flex-100 layout-row-wrap responsive-column">
             @if (isAccrualAccounting()) {
               <mifosx-gl-account-display
                 class="flex-100"
