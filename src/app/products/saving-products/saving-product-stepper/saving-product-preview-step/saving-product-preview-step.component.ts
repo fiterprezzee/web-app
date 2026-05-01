@@ -116,6 +116,10 @@ export class SavingProductPreviewStepComponent implements OnInit, OnChanges {
           this.savingProduct.transfersInSuspenseAccountId,
           liabilityAccountData
         ),
+        fundsOnHoldAccount: this.accounting.glAccountLookUp(
+          this.savingProduct.fundsOnHoldAccountId,
+          liabilityAccountData
+        ),
         escheatLiability: this.accounting.glAccountLookUp(this.savingProduct.escheatLiabilityId, liabilityAccountData),
         interestOnSavingsAccount: this.accounting.glAccountLookUp(
           this.savingProduct.interestOnSavingsAccountId,

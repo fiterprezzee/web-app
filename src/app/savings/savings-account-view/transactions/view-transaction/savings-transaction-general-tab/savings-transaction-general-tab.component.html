@@ -112,6 +112,53 @@
           </div>
         }
 
+        @if (transactionData.isFromHoldRelease) {
+          <div class="flex-50 mat-body-strong">
+            {{ 'labels.inputs.Transaction Source' | translate }}
+          </div>
+          <div class="flex-50">
+            <span class="hold-release-badge">{{ 'labels.text.From Hold Release' | translate }}</span>
+          </div>
+        }
+
+        @if (transactionData.holdTransactionId) {
+          <div class="flex-50 mat-body-strong">
+            {{ 'labels.inputs.Hold Transaction ID' | translate }}
+          </div>
+          <div class="flex-50">
+            <a [routerLink]="['../../', transactionData.holdTransactionId, 'general']">
+              {{ transactionData.holdTransactionId }}
+            </a>
+          </div>
+        }
+
+        @if (transactionData.remainingHoldAmount !== undefined && transactionData.transactionType?.amountHold) {
+          <div class="flex-50 mat-body-strong">
+            {{ 'labels.inputs.Remaining Hold Amount' | translate }}
+          </div>
+          <div class="flex-50">
+            {{ transactionData.remainingHoldAmount | currency: transactionData.currency.code : 'symbol-narrow' : '1.2-2' }}
+          </div>
+        }
+
+        @if (transactionData.operationType) {
+          <div class="flex-50 mat-body-strong">
+            {{ 'labels.inputs.Operation Type' | translate }}
+          </div>
+          <div class="flex-50">
+            {{ transactionData.operationType }}
+          </div>
+        }
+
+        @if (transactionData.glStatus) {
+          <div class="flex-50 mat-body-strong">
+            {{ 'labels.inputs.GL Status' | translate }}
+          </div>
+          <div class="flex-50">
+            {{ transactionData.glStatus }}
+          </div>
+        }
+
         @if (transactionData.paymentDetailData) {
           <mifosx-transaction-payment-detail [paymentDetailData]="transactionData.paymentDetailData">
           </mifosx-transaction-payment-detail>

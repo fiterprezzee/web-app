@@ -78,6 +78,32 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="holdInfo">
+        <th mat-header-cell class="center" *matHeaderCellDef>{{ 'labels.inputs.Hold Info' | translate }}</th>
+        <td mat-cell *matCellDef="let transaction" [ngClass]="savingsTransactionColor(transaction)">
+          @if (isFromHoldRelease(transaction)) {
+            <span class="hold-release-badge">
+              {{ 'labels.text.From Hold Release' | translate }}
+            </span>
+          }
+          @if (isHoldTransaction(transaction) && transaction.remainingHoldAmount !== undefined) {
+            <span class="remaining-hold" [title]="'labels.text.Remaining Hold Amount' | translate">
+              {{ transaction.remainingHoldAmount | currency: currency?.code || 'USD' : 'symbol-narrow' : '1.2-2' }}
+            </span>
+          }
+          @if (transaction.holdTransactionId) {
+            <button
+              mat-icon-button
+              color="primary"
+              [title]="'labels.text.View Hold Transaction' | translate"
+              (click)="navigateToHoldTransaction(transaction.holdTransactionId); $event.stopPropagation()"
+            >
+              <fa-icon icon="link"></fa-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="debit">
         <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Debit' | translate }}</th>
         <td
