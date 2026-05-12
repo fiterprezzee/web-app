@@ -28,7 +28,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::916148231619:role/fiter-us-east-2-dev-ghdeploy-role-prezzee
+          role-to-assume: arn:aws:iam::916148231619:role/fiter-use-east-2-dev-ghdeploy-prezzee
           role-session-name: distribution_deploy
           aws-region: us-east-2
           web-identity-token-file: ${{ steps.id-token.outputs.token }}
