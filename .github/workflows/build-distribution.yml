@@ -1,0 +1,78 @@
+name: Build distribution image
+
+on:
+  push:
+    branches: [dev]
+env:
+  IMAGE_REPOSITORY: 'prezzee/frontend'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Get the commit message
+        id: commit-message
+        run: echo "::set-output name=message::$(git log -1 --pretty=format:'%s')"
+
+      - name: Get the short commit message
+        id: short-commit-message
+        run: echo "::set-output name=commit_hash::$(git rev-parse --short HEAD)"
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::916148231619:role/fiter-us-east-2-dev-ghdeploy-role-prezzee
+          role-session-name: distribution_deploy
+          aws-region: us-east-2
+          web-identity-token-file: ${{ steps.id-token.outputs.token }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.IMAGE_REPOSITORY }}
+          COMMIT_HASH: ${{ steps.short-commit-message.outputs.commit_hash }}
+
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$COMMIT_HASH
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$COMMIT_HASH
+
+      - name: Print image path and tag
+        run: |
+          echo "Image pushed: ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_REPOSITORY }}:${{ steps.short-commit-message.outputs.commit_hash }}"
+
+  # notify-slack:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: always() # Ensures this runs regardless of build success/failure
+  #   steps:
+  #     - name: Set Slack Message and Color
+  #       run: |
+  #         if [[ "${{ needs.build.result }}" == "success" ]]; then
+  #           echo "SLACK_MESSAGE=✅ Build and deployment completed successfully on branch ${GITHUB_REF}. Last commit: ${{ steps.commit-message.outputs.message }}" >> $GITHUB_ENV
+  #           echo "SLACK_COLOR=good" >> $GITHUB_ENV
+  #         else
+  #           echo "SLACK_MESSAGE=❌ Build and deployment failed on branch ${GITHUB_REF}. Last commit: ${{ steps.commit-message.outputs.message }}" >> $GITHUB_ENV
+  #           echo "SLACK_COLOR=danger" >> $GITHUB_ENV
+  #         fi
+
+  #     - name: Notify Slack
+  #       uses: rtCamp/action-slack-notify@v2
+  #       env:
+  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #         SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+  #         SLACK_TITLE: Deployment status of ${{ github.repository }}
+  #         SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
+  #         SLACK_COLOR: ${{ env.SLACK_COLOR }}

@@ -10,7 +10,10 @@ import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
-import { ReleaseAmountDialogComponent, ReleaseAmountDialogData } from 'app/savings/savings-account-view/custom-dialogs/release-amount-dialog/release-amount-dialog.component';
+import {
+  ReleaseAmountDialogComponent,
+  ReleaseAmountDialogData
+} from 'app/savings/savings-account-view/custom-dialogs/release-amount-dialog/release-amount-dialog.component';
 import { UndoTransactionDialogComponent } from 'app/savings/savings-account-view/custom-dialogs/undo-transaction-dialog/undo-transaction-dialog.component';
 import { SavingsService } from 'app/savings/savings.service';
 import { SettingsService } from 'app/settings/settings.service';

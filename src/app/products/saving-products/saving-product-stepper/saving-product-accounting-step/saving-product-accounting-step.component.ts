@@ -235,10 +235,7 @@ export class SavingProductAccountingStepComponent implements OnInit {
           'transfersInSuspenseAccountId',
           new UntypedFormControl('', Validators.required)
         );
-        this.savingProductAccountingForm.addControl(
-          'fundsOnHoldAccountId',
-          new UntypedFormControl('')
-        );
+        this.savingProductAccountingForm.addControl('fundsOnHoldAccountId', new UntypedFormControl(''));
         this.savingProductAccountingForm.addControl(
           'interestOnSavingsAccountId',
           new UntypedFormControl('', Validators.required)
