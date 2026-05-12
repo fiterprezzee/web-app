@@ -137,7 +137,9 @@
             {{ 'labels.inputs.Remaining Hold Amount' | translate }}
           </div>
           <div class="flex-50">
-            {{ transactionData.remainingHoldAmount | currency: transactionData.currency.code : 'symbol-narrow' : '1.2-2' }}
+            {{
+              transactionData.remainingHoldAmount | currency: transactionData.currency.code : 'symbol-narrow' : '1.2-2'
+            }}
           </div>
         }
 

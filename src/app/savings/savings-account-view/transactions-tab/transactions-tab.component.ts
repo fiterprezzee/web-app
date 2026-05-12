@@ -268,7 +268,13 @@ export class TransactionsTabComponent implements OnInit {
    */
   navigateToHoldTransaction(holdTransactionId: number): void {
     if (holdTransactionId) {
-      this.router.navigate([holdTransactionId, 'general'], { relativeTo: this.route });
+      this.router.navigate(
+        [
+          holdTransactionId,
+          'general'
+        ],
+        { relativeTo: this.route }
+      );
     }
   }
 

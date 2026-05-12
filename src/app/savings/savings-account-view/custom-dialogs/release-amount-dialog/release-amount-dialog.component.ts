@@ -59,8 +59,18 @@ export class ReleaseAmountDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.releaseForm = this.formBuilder.group({
-      transactionDate: [new Date(), Validators.required],
-      transactionAmount: [this.remainingHoldAmount, [Validators.required, Validators.min(0.01), Validators.max(this.remainingHoldAmount)]],
+      transactionDate: [
+        new Date(),
+        Validators.required
+      ],
+      transactionAmount: [
+        this.remainingHoldAmount,
+        [
+          Validators.required,
+          Validators.min(0.01),
+          Validators.max(this.remainingHoldAmount)
+        ]
+      ],
       paymentTypeId: ['']
     });
   }
